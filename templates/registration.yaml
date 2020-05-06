@@ -1,0 +1,16 @@
+id: {{ matrix_appservice_irc_id }}
+hs_token: {{ matrix_appservice_irc_hs_token }}
+as_token: {{ matrix_appservice_irc_as_token }}
+namespaces:
+  users:
+    - exclusive: true
+      regex: '@irc_pm_hackint_.*:noemis\.me'
+  aliases:
+    - exclusive: true
+      regex: '#irc_hackint_.*:noemis\.me'
+  rooms: []
+url: 'http://{{ matrix_appservice_irc_listen }}:{{ matrix_appservice_irc_port }}'
+sender_localpart: my_b
+rate_limited: false
+protocols:
+  - irc

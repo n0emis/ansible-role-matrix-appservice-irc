@@ -1,0 +1,84 @@
+homeserver:
+  url: "https://matrix.noemis.me"
+  domain: "noemis.me"
+ircService:
+  servers:
+    irc.hackint.org:
+      name: "Hackint"
+      port: 6697
+      ssl: true
+      sslselfsign: false
+      botConfig:
+        enabled: true
+        nick: "n0emisBOT"
+        joinChannelsIfNoUsers: false
+
+      privateMessages:
+        enabled: true
+        federate: false
+
+      dynamicChannels:
+        enabled: true
+        createAlias: true
+        published: false
+        joinRule: invite
+        federate: true
+        aliasTemplate: "#irc_hackint_$CHANNEL"
+        whitelist:
+           - "@n0emis:noemis.me"
+      ircClients:
+        # The template to apply to every IRC client nick. This MUST have either
+        # $DISPLAY or $USERID or $LOCALPART somewhere in it.
+        # Optional. Default: "M-$DISPLAY". Example: "M-Alice".
+        nickTemplate: "$DISPLAY[m]"
+        # True to allow virtual IRC clients to change their nick on this server
+        # by issuing !nick <server> <nick> commands to the IRC AS bot.
+        # This is completely freeform: it will NOT follow the nickTemplate.
+        allowNickChanges: true
+
+      matrixClients:
+        # The user ID template to use when creating virtual matrix users. This
+        # MUST have $NICK somewhere in it.
+        # Optional. Default: "@$SERVER_$NICK".
+        # Example: "@irc.example.com_Alice:example.com"
+        userTemplate: "@irc_pm_hackint_$NICK"
+        # The display name to use for created matrix clients. This should have
+        # $NICK somewhere in it if it is specified. Can also use $SERVER to
+        # insert the IRC domain.
+        # Optional. Default: "$NICK (IRC)". Example: "Alice (IRC)"
+        displayName: "$NICK (IRC)"
+        # Number of tries a client can attempt to join a room before the request
+        # is discarded. You can also use -1 to never retry or 0 to never give up.
+        # Optional. Default: -1
+        joinAttempts: -1
+  # Set information about the bridged channel in the room state, so that client's may
+  # present relevant UI to the user. MSC2346
+  bridgeInfoState:
+    enabled: true
+    initial: true
+  # Configuration for logging. Optional. Default: console debug level logging
+  # only.
+  logging:
+    # Level to log on console/logfile. One of error|warn|info|debug
+    level: "debug"
+    # The file location to log to. This is relative to the project directory.
+    logfile: "{{ matrix_appservice_irc_log_path }}/debug.log"
+    # The file location to log errors to. This is relative to the project
+    # directory.
+    errfile: "{{ matrix_appservice_irc_log_path }}/errors.log"
+    # Whether to log to the console or not.
+    toConsole: true
+    # The max number of files to keep. Files will be overwritten eventually due
+    # to rotations.
+    maxFiles: 5
+
+  passwordEncryptionKeyPath: "{{ matrix_appservice_irc_database_path }}/passkey.pem"
+
+# Use an external database to store bridge state.
+database:
+  # database engine (must be 'postgres' or 'nedb'). Default: nedb
+  engine: "nedb"
+  # Either a PostgreSQL connection string, or a path to the NeDB storage directory.
+  # For postgres, it must start with postgres://
+  # For NeDB, it must start with nedb://. The path is relative to the project directory.
+  connectionString: "nedb://{{ matrix_appservice_irc_database_path }}"

@@ -1,0 +1,91 @@
+---
+- name: Create group
+  group:
+    name: "{{ matrix_appservice_irc_group }}"
+    state: present
+
+- name: Create user
+  user:
+    name: "{{ matrix_appservice_irc_user }}"
+    group: "{{ matrix_appservice_irc_group }}"
+    create_home: no
+    system: yes
+
+- name: Create matrix-appservice-irc installation directory
+  file:
+    path: "{{ matrix_appservice_irc_install_path }}"
+    recurse: yes
+    state: directory
+    owner: "{{ matrix_appservice_irc_user }}"
+    group: "{{ matrix_appservice_irc_group }}"
+
+- name: Create matrix-appservice-irc config directory
+  file:
+    path: "{{ matrix_appservice_irc_config_path }}"
+    recurse: yes
+    state: directory
+    owner: "{{ matrix_appservice_irc_user }}"
+    group: "{{ matrix_appservice_irc_group }}"
+
+- name: Create matrix-appservice-irc database directory
+  file:
+    path: "{{ matrix_appservice_irc_database_path }}"
+    recurse: yes
+    state: directory
+    owner: "{{ matrix_appservice_irc_user }}"
+    group: "{{ matrix_appservice_irc_group }}"
+
+- name: Create matrix-appservice-irc log directory
+  file:
+    path: "{{ matrix_appservice_irc_log_path }}"
+    recurse: yes
+    state: directory
+    owner: "{{ matrix_appservice_irc_user }}"
+    group: "{{ matrix_appservice_irc_group }}"
+
+- name: Add matrix-appservice-irc config to host
+  template:
+    src: "config.yaml"
+    dest: "{{ matrix_appservice_irc_config_path }}/config.yaml"
+    owner: "{{ matrix_appservice_irc_user }}"
+    group: "{{ matrix_appservice_irc_group }}"
+
+- name: Add matrix-appservice-irc registration config to host
+  template:
+    src: "registration.yaml"
+    dest: "{{ matrix_appservice_irc_config_path }}/registration.yaml"
+    owner: "{{ matrix_appservice_irc_user }}"
+    group: "{{ matrix_appservice_irc_group }}"
+
+- name: Clone matrix-appservice-irc source
+  git:
+    dest: "{{ matrix_appservice_irc_install_path }}"
+    repo: "{{ matrix_appservice_irc_repository }}"
+    version: "{{ matrix_appservice_irc_version }}"
+    force: yes
+
+- name: Install matrix-appservice-ircs dependencies
+  npm:
+    path: "{{ matrix_appservice_irc_install_path }}"
+    state: present
+  become_user: "{{ matrix_appservice_irc_user }}"
+  become: yes
+
+- name: Build the source with NPM
+  command: "npm run build"
+  args:
+    chdir: "{{ matrix_appservice_irc_install_path }}"
+  become_user: "{{ matrix_appservice_irc_user }}"
+  become: yes
+
+- name: Add systemd service file for matrix-appservice-irc
+  template:
+    src: "matrix-appservice-irc.service"
+    dest: "/etc/systemd/system/matrix-appservice-irc.service"
+
+- name: Ensure matrix-appservice-irc systemd service is enabled and running
+  systemd:
+    name: "matrix-appservice-irc"
+    daemon_reload: yes
+    enabled: yes
+    state: started

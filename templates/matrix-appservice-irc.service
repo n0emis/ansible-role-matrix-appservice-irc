@@ -1,0 +1,18 @@
+[Unit]
+Description=matrix-appservice-irc service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory={{ matrix_appservice_irc_install_path }}
+ExecStart=/usr/bin/env node {{ matrix_appservice_irc_install_path }}/app.js \
+    -c {{ matrix_appservice_irc_config_path }}/config.yaml \
+    -f {{ matrix_appservice_irc_config_path }}/registration.yaml \
+    -p {{ matrix_appservice_irc_port }}
+
+Restart=always
+User={{ matrix_appservice_irc_user }}
+Group={{ matrix_appservice_irc_group }}
+
+[Install]
+WantedBy=multi-user.target

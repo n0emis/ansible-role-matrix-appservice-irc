@@ -1,0 +1,15 @@
+---
+matrix_appservice_irc_user: "matrix-appservice-irc"
+matrix_appservice_irc_group: "matrix-appservice-irc"
+matrix_appservice_irc_install_path: "/opt/matrix-appservice-irc"
+matrix_appservice_irc_config_path: "/etc/matrix-appservice-irc"
+matrix_appservice_irc_database_path: "/var/lib/matrix-appservice-irc"
+matrix_appservice_irc_log_path: "/var/log/matrix-appservice-irc"
+
+matrix_appservice_irc_repository: "https://github.com/matrix-org/matrix-appservice-irc"
+matrix_appservice_irc_version: "0.17.0"
+
+matrix_appservice_irc_port: "9999"
+matrix_appservice_irc_listen: "127.0.0.1"
+
+matrix_appservice_irc_id: "matrix-appservice-irc"
