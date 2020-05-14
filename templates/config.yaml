@@ -9,13 +9,13 @@ ircService:
       ssl: true
       sslselfsign: false
       botConfig:
-        enabled: true
+        enabled: false
         nick: "n0emisBOT"
         joinChannelsIfNoUsers: false
 
       privateMessages:
         enabled: true
-        federate: false
+        federate: true
 
       dynamicChannels:
         enabled: true
@@ -26,6 +26,35 @@ ircService:
         aliasTemplate: "#irc_hackint_$CHANNEL"
         whitelist:
            - "@n0emis:noemis.me"
+           - "@leo:labcode.de"
+      membershipLists:
+        # Enable the syncing of membership lists between IRC and Matrix. This
+        # can have a significant effect on performance on startup as the lists are
+        # synced. This must be enabled for anything else in this section to take
+        # effect. Default: false.
+        enabled: true
+
+        # Syncing membership lists at startup can result in hundreds of members to
+        # process all at once. This timer drip feeds membership entries at the
+        # specified rate. Default: 10000. (10s)
+        floodDelayMs: 10000
+        global:
+          ircToMatrix:
+            # Get a snapshot of all real IRC users on a channel (via NAMES) and
+            # join their virtual matrix clients to the room.
+            initial: true
+            # Make virtual matrix clients join and leave rooms as their real IRC
+            # counterparts join/part channels. Default: false.
+            incremental: true
+
+          matrixToIrc:
+            # Get a snapshot of all real Matrix users in the room and join all of
+            # them to the mapped IRC channel on startup. Default: false.
+            initial: true
+            # Make virtual IRC clients join and leave channels as their real Matrix
+            # counterparts join/leave rooms. Make sure your 'maxClients' value is
+            # high enough! Default: false.
+            incremental: true
       ircClients:
         # The template to apply to every IRC client nick. This MUST have either
         # $DISPLAY or $USERID or $LOCALPART somewhere in it.
@@ -60,7 +89,7 @@ ircService:
   # only.
   logging:
     # Level to log on console/logfile. One of error|warn|info|debug
-    level: "debug"
+    level: "warn"
     # The file location to log to. This is relative to the project directory.
     logfile: "{{ matrix_appservice_irc_log_path }}/debug.log"
     # The file location to log errors to. This is relative to the project

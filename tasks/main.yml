@@ -49,6 +49,7 @@
     dest: "{{ matrix_appservice_irc_config_path }}/config.yaml"
     owner: "{{ matrix_appservice_irc_user }}"
     group: "{{ matrix_appservice_irc_group }}"
+  notify: restart matrix-appservice-irc
 
 - name: Add matrix-appservice-irc registration config to host
   template:
@@ -56,6 +57,7 @@
     dest: "{{ matrix_appservice_irc_config_path }}/registration.yaml"
     owner: "{{ matrix_appservice_irc_user }}"
     group: "{{ matrix_appservice_irc_group }}"
+  notify: restart matrix-appservice-irc
 
 - name: Clone matrix-appservice-irc source
   git:

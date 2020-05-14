@@ -1,0 +1,5 @@
+---
+- name: restart matrix-appservice-irc
+  systemd:
+    name: "matrix-appservice-irc"
+    state: restarted
