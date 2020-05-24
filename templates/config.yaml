@@ -45,7 +45,7 @@ ircService:
             initial: true
             # Make virtual matrix clients join and leave rooms as their real IRC
             # counterparts join/part channels. Default: false.
-            incremental: true
+            incremental: false
 
           matrixToIrc:
             # Get a snapshot of all real Matrix users in the room and join all of
