@@ -27,6 +27,7 @@ ircService:
         whitelist:
            - "@n0emis:noemis.me"
            - "@leo:labcode.de"
+           - "@e1mo:chaos.jetzt"
       membershipLists:
         # Enable the syncing of membership lists between IRC and Matrix. This
         # can have a significant effect on performance on startup as the lists are
